@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Client
+﻿namespace Client
 {
-    static class Monitoring
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
+
+    internal static class Monitoring
     {
-        private static double _tempMin = 10000.0d;
-        private static double _tempMax = 0.0d;
-        private static double _tempAverage;
-        private static int _openPortsCalls = 0;
-        private static string _openPortsCache = "";
+        #region methods
 
         internal static float GetTemperature()
         {
             var result = "";
 #if DEBUG
-            result = new Random().Next(30, 70).ToString() + ".3'C";
+            result = new Random().Next(30, 70) + ".3'C";
 #else
             // bash command / opt / vc / bin / vcgencmd measure_temp
             var process = new Process()
@@ -35,14 +31,15 @@ namespace Client
             process.WaitForExit();
 
 #endif
-
             var temperatureResult = result.Substring(result.IndexOf('=') + 1, result.IndexOf("'") - (result.IndexOf('=') + 1)).Replace('.', ',');
             var temperature = 0.0f;
             if (float.TryParse(temperatureResult, out temperature))
+            {
                 return temperature;
-            else
-                return 0.0f;
+            }
+            return 0.0f;
         }
 
+        #endregion
     }
 }
