@@ -1,0 +1,38 @@
+FROM balenalib/rpi-raspbian
+
+# RUN apt-get update -qy && apt-get install -y \
+#    python \
+#    python-rpi.gpio \
+#    -y libraspberrypi-bin \
+#	python-dev \
+#	python-smbus \
+#	python-serial \
+#	python-imaging \
+#	python-pip
+
+RUN apt-get -q update && \
+    apt-get -qy install python-dev python-pip python-smbus python-psutil python-setuptools gcc make
+    
+	
+RUN apt-get install python \
+    python-rpi.gpio \
+    -y libraspberrypi-bin \
+	python-serial \
+	python-imaging
+	
+RUN pip install spidev
+
+COPY . .
+WORKDIR "/bcm2835"
+
+RUN ./configure
+RUN make
+# RUN make check
+RUN make install
+
+WORKDIR "/wiringPi"
+RUN ./build
+
+WORKDIR "/Python"
+
+ENTRYPOINT ["python", "./main.py"]
