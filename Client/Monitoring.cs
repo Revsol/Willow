@@ -8,7 +8,7 @@
     {
         #region methods
 
-        internal static float GetTemperature()
+        internal static double GetTemperature()
         {
             var result = "";
 #if DEBUG
@@ -31,13 +31,14 @@
             process.WaitForExit();
 
 #endif
+            Console.WriteLine($"TemperatureResult: {result}");
             var temperatureResult = result.Substring(result.IndexOf('=') + 1, result.IndexOf("'") - (result.IndexOf('=') + 1)).Replace('.', ',');
-            var temperature = 0.0f;
-            if (float.TryParse(temperatureResult, out temperature))
+            var temperature = 0.0d;
+            if (double.TryParse(temperatureResult, out temperature))
             {
                 return temperature;
             }
-            return 0.0f;
+            return 0.0d;
         }
 
         #endregion
